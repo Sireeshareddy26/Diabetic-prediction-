@@ -1,3 +1,5 @@
+# Add this at the top of app.py with your other imports
+import sklearn
 import streamlit as st
 import pandas as pd
 import pickle
