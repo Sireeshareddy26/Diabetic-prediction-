@@ -2,18 +2,46 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
+import sklearn # Explicitly import sklearn
+from sklearn.ensemble import RandomForestClassifier # Explicitly import the model class
 
 st.set_page_config(page_title="Diabetic Risk Predictor", layout="centered")
 
-# --- Load Model and Features ---
-# The model.pkl contains the trained RandomForestClassifier model.
-with open('model.pkl', 'rb') as file:
-    model = pickle.load(file)
+# --- Diagnostic: Check scikit-learn version ---
+try:
+    st.sidebar.write(f"scikit-learn version: {sklearn.__version__}")
+except Exception as e:
+    st.sidebar.error(f"Could not get scikit-learn version: {e}. Is scikit-learn installed?")
 
-# The features.pkl contains the list of feature columns the model was trained on,
-# ensuring consistent input structure.
-with open('features.pkl', 'rb') as file:
-    model_features = pickle.load(file)
+
+# --- Load Model and Features ---
+try:
+    # The model.pkl contains the trained RandomForestClassifier model.
+    with open('model.pkl', 'rb') as file:
+        model = pickle.load(file)
+    st.sidebar.success("Model 'model.pkl' loaded successfully.")
+except ModuleNotFoundError as e:
+    st.sidebar.error(
+        f"Error loading model: {e}. This usually means that the Python environment "
+        f"where the app is running is missing a required library (e.g., scikit-learn) "
+        f"or has an incompatible version. Please ensure 'scikit-learn' is in your "
+        f"requirements.txt and installed, and that its version matches the one used "
+        f"to save the model." # Added detailed error message
+    )
+    st.stop() # Stop the app if model loading fails to prevent further errors
+except Exception as e:
+    st.sidebar.error(f"An unexpected error occurred while loading the model: {e}")
+    st.stop()
+
+try:
+    # The features.pkl contains the list of feature columns the model was trained on,
+    # ensuring consistent input structure.
+    with open('features.pkl', 'rb') as file:
+        model_features = pickle.load(file)
+    st.sidebar.success("Feature columns 'features.pkl' loaded successfully.")
+except Exception as e:
+    st.sidebar.error(f"Error loading feature columns 'features.pkl': {e}")
+    st.stop()
 
 # --- Streamlit App UI ---
 st.title("Diabetic Risk Predictor")
