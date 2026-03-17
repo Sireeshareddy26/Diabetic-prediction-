@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
-import sklearn # Explicitly import sklearn
+
 from sklearn.ensemble import RandomForestClassifier # Explicitly import the model class
 
 st.set_page_config(page_title="Diabetic Risk Predictor", layout="centered")
